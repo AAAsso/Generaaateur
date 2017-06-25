@@ -1,0 +1,41 @@
+
+    /**
+{% block phpdoc_method_header %}
+     * Displays a form to editer an existing {{ entity_singularized }} entity.
+{% endblock phpdoc_method_header %}
+     *
+{% block phpdoc_method_annotations %}
+{% if 'annotation' == format %}
+     * @Route("/editer/{{ '{' ~ identifier ~ '}' }}", name="{{ route_name_prefix }}_editer")
+     * @Method({"GET", "POST"})
+{% endif %}
+{% endblock phpdoc_method_annotations %}
+     */
+{% block method_definition %}
+    public function editerAction(Request $request, {{ entity_class }} ${{ entity_singularized }})
+{% endblock method_definition %}
+    {
+{% block method_body %}
+        $formSuppprimer = $this->creerFormSupprimer(${{ entity_singularized }});
+        {% if use_form_type_instance -%}
+            $formEditer = $this->createForm(new {{ entity_singularized|capitalize }}Type(), ${{ entity_singularized }});
+        {% else -%}
+            $formEditer = $this->createForm('{{ namespace }}\Form\{{ entity }}Type', ${{ entity_singularized }});
+        {% endif -%}
+        $formEditer->handleRequest($request);
+
+        if ($formEditer->isSubmitted() && $formEditer->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('{{ route_name_prefix }}_detail', array('{{ identifier }}' => ${{ entity_singularized }}->get{{ identifier|capitalize }}()));
+        }
+{% endblock method_body %}
+
+{% block method_return %}
+        return $this->render('{{ entity|lower|replace({'\\': '/'}) }}/editer.html.twig', array(
+            '{{ entity_singularized }}' => ${{ entity_singularized }},
+            'form_editer' => $formEditer->createView(),
+            'form_supprimer' => $formSuppprimer->createView(),
+        ));
+{% endblock method_return %}
+    }

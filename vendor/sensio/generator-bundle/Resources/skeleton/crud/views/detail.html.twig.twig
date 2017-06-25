@@ -1,0 +1,53 @@
+{% block extends %}
+    {{ "{% extends 'base.html.twig' %}" }}
+{% endblock extends %}
+
+{% block body %}
+    {{ "{% block body %}" }}
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="/">AAAccueil</a></li>
+            <li><a href="{{ "{{ path('" ~ route_name_prefix ~ "_liste') }}" }}">{{ entity_singularized|capitalize }}s</a></li>
+            <li class="active">{{ "{{ " ~ entity_singularized ~ "." ~ identifier ~ " }}" }} TODO: modifier "id"</li>
+        </ol>
+
+        <h1>{{ entity_singularized|capitalize }}</h1>
+
+        <dl class="dl-horizontal">
+            {%- for field, metadata in fields %}
+
+            <dt>{{ field|capitalize }}</dt>
+
+            {%- if metadata.type in ['datetime'] %}
+
+            <dd>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'Y-m-d H:i:s\') }}{% endif %}' }}</dd>
+
+            {%- elseif metadata.type in ['date'] %}
+
+            <dd>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'Y-m-d\') }}{% endif %}' }}</dd>
+
+            {%- elseif metadata.type in ['time'] %}
+
+            <dd>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'H:i:s\') }}{% endif %}' }}</dd>
+
+            {%- elseif metadata.type in ['array'] %}
+
+            <dd>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|join(\', \') }}{% endif %}' }}</dd>
+
+            {%- elseif metadata.type in ['boolean'] %}
+
+            <dd>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}Yes{% else %}No{% endif %}' }}</dd>
+
+            {%- else %}
+
+            <dd>{{ '{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' }}' }}</dd>
+
+            {%- endif %}
+
+            {%- endfor %}
+        </dl>
+    </div>
+    {% set hide_edit, hide_delete = false, false %}
+    {{ include('crud/views/others/record_actions.html.twig.twig') -}}
+    {{ "{% endblock %}" }}
+{% endblock body %}

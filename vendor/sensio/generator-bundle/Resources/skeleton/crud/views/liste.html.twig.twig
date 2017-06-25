@@ -1,0 +1,117 @@
+{% block extends %}
+    {{ "{% extends 'base.html.twig' %}" }}
+{% endblock extends %}
+
+{% block body %}
+    {{ "{% block body %}" }}
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="/">AAAccueil</a></li>
+            <li class="active">{{ entity_pluralized|capitalize }}</li>
+        </ol>
+        <h1>{{ entity_pluralized|capitalize }}</h1>
+    </div>
+    <div class="col-md-6"></div>
+    <div class="col-md-6 text-right">
+        <a href="{{ "{{ path('" ~ route_name_prefix ~ "_nouveau') }}" }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Publier une nouvelle/un nouveau {{ entity_singularized }} TODO</a>
+    </div>
+    <div class="col-md-12">
+        <table class="table table-hover aaa-table">
+            <thead>
+                <tr>
+                    {%- for field, metadata in fields %}
+
+                    <th>{{ field|capitalize }}</th>
+
+                    {%- endfor %}
+                    <th class="aaa-action"></th>
+                    <th class="aaa-action"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ '{% for ' ~ entity_singularized ~ ' in ' ~ entity_pluralized ~ ' %}' }}
+                <tr>
+
+                    {%- for field, metadata in fields %}
+                    {%- if loop.first and ('detail' in actions) %}
+
+                    <td><a href="{{ "{{ path('" ~ route_name_prefix ~ "_detail', { '"~ identifier ~"': " ~ entity_singularized ~ "."~ identifier ~" }) }}" }}">{{ '{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' }}' }}</a></td>
+
+                    {%- elseif metadata.type in ['datetime'] %}
+
+                    <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'Y-m-d H:i:s\') }}{% endif %}' }}</td>
+
+                    {%- elseif metadata.type in ['date'] %}
+
+                    <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'Y-m-d\') }}{% endif %}' }}</td>
+
+                    {%- elseif metadata.type in ['time'] %}
+
+                    <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|date(\'H:i:s\') }}{% endif %}' }}</td>
+
+                    {%- elseif metadata.type in ['array'] %}
+
+                    <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ '|join(\', \') }}{% endif %}' }}</td>
+
+                    {%- elseif metadata.type in ['boolean'] %}
+
+                    <td>{{ '{% if ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' %}Yes{% else %}No{% endif %}' }}</td>
+
+                    {%- else %}
+
+                    <td>{{ '{{ ' ~ entity_singularized ~ '.' ~ field|replace({'_': ''}) ~ ' }}' }}</td>
+
+                    {%- endif %}
+
+                    {%- if loop.last %}
+
+                    <td><a href="{{ "{{ path('" ~ route_name_prefix ~ "_editer', { '"~ identifier ~"': " ~ entity_singularized ~ "."~ identifier ~" }) }}" }}" class="btn btn-default" title="Éditer l'{{ entity_singularized }}"><span class="glyphicon glyphicon-edit"></span></a></td>
+                    <td><button class="btn btn-danger" data-toggle="modal" data-target="#modal-{{ entity_singularized ~ "-"~ identifier }}" title="Supprimer l'{{ entity_singularized }}"><span class="glyphicon glyphicon-trash"></span></button></td>
+
+                    {%- endif %}
+                    {%- endfor %}
+
+                </tr>
+                {{ '{% endfor %}' }}
+            </tbody>
+        </table>
+    </div>
+
+    {% if 'nouveau' in actions -%}
+        <div class="col-md-6"></div>
+        <div class="col-md-6 text-right">
+            <a href="{{ "{{ path('" ~ route_name_prefix ~ "_nouveau') }}" }}" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span> Publier une nouvelle/un nouveau {{ entity_singularized }} TODO</a>
+        </div>
+        {%- endif %}
+        <div id="modals-confirmation-suppression">
+            {{ '{% for ' ~ entity_singularized ~ ' in ' ~ entity_singularized ~ 's %}' }}
+            {{ '{% set form_supprimer = forms_supprimer[' ~ entity_singularized ~ "."~ identifier ~ '] %}' }}
+            <div id="modal-{{ entity_singularized ~ "-" ~ identifier }}" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p>Voulez-vous supprimer le/la/l' {{ entity_singularized }} TODO: ajouter label ?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer text-left">
+                            <div class="row">
+                                <div class="col-md-6 text-left">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-chevron-left"></span> Annuler</button>
+                                </div>
+                                <div class="col-md-6 text-right">
+                                    {{ '{{ form_start(form_supprimer) }}' }}
+                                    <button class="btn btn-danger" type="submit"><span class="glyphicon glyphicon-trash"></span> Confirmer la suppression</button>
+                                    {{ '{{ form_end(form_supprimer) }}' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+            {{ '{% endfor %}' }}
+        </div>
+        {{ "{% endblock %}" }}
+        {% endblock body %}

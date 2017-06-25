@@ -1,0 +1,24 @@
+{% block extends %}
+    {{ "{% extends 'base.html.twig' %}" }}
+{% endblock extends %}
+
+{% block body %}
+    {{ "{% block body %}" }}
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="/">AAAccueil</a></li>
+            <li><a href="{{ "{{ path('" ~ route_name_prefix ~ "_liste') }}" }}">{{ entity_singularized|capitalize }}s</a></li>
+            <li class="active">{{ "{{ " ~ entity_singularized ~ "." ~ identifier ~ " }}" }} TODO: modifier "id"</li>
+        </ol>
+
+        <h1>Éditer le/la/l'{{ entity_singularized }} TODO</h1>
+    </div>
+    <div class="col-md-12">
+        {{ "{{ form_start(form_editer, {'attr': {'id': 'form_editer_" ~ entity_singularized ~ "'}}) }}" }}
+        {{ '{{ form_widget(form_editer) }}' }}
+        {{ '{{ form_end(form_editer) }}' }}
+    </div>
+    {% set hide_edit, hide_delete = true, false %}
+    {{ include('crud/views/others/record_actions.html.twig.twig') -}}
+    {{ "{% endblock %}" }}
+{% endblock body %}

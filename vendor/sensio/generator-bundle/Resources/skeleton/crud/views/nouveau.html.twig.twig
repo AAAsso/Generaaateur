@@ -1,0 +1,27 @@
+{% block extends %}
+    {{ "{% extends 'base.html.twig' %}" }}
+{% endblock extends %}
+
+{% block body %}
+    {{ "{% block body %}" }}
+    <div class="col-md-12">
+        <ol class="breadcrumb">
+            <li><a href="/">AAAccueil</a></li>
+            <li><a href="{{ "{{ path('" ~ route_name_prefix ~ "_liste') }}" }}">{{ entity_singularized|capitalize }}s</a></li>
+            <li class="active">Publier une nouvelle/un nouveau {{ entity_singularized }} TODO</li>
+        </ol>
+
+        <h1>Publier une nouvelle/un nouveau {{ entity_singularized }} TODO</h1>
+    </div>
+    <div class="col-md-12">
+        {{ "{{ form_start(form, {'attr': {'id': 'form_publier_" ~ entity_singularized ~ "'}}) }}" }}
+        {{ '{{ form_widget(form) }}' }}
+        {{ '{{ form_end(form) }}' }}
+    </div>
+    <div class="col-md-6"></div>
+    <div class="col-md-6 text-right">
+        <a href="{{ "{{ path('" ~ route_name_prefix ~ "_liste') }}" }}" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Annuler la publication</a>
+        <button class="btn btn-primary" form="form_publier_{{ entity_singularized }}"><span class="glyphicon glyphicon-ok"></span> Publier le/la/l'{{ entity_singularized }} TODO:vérifier</button>
+    </div>
+    {{ "{% endblock %}" }}
+{% endblock body %}

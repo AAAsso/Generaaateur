@@ -1,0 +1,36 @@
+    /**
+{% block phpdoc_method_header %}
+     * Lists all {{ entity_singularized }} entities.
+{% endblock phpdoc_method_header %}
+     *
+{% block phpdoc_method_annotations %}
+{% if 'annotation' == format %}
+     * @Route("/liste", name="{{ route_name_prefix }}_liste")
+     * @Method("GET")
+{% endif %}
+{% endblock phpdoc_method_annotations %}
+     */
+{% block method_definition %}
+    public function listeAction()
+{% endblock method_definition %}
+    {
+{% block method_body %}
+        $em = $this->getDoctrine()->getManager();
+
+        ${{ entity_pluralized }} = $em->getRepository('{{ bundle }}:{{ entity }}')->findAll();
+        $formsSupprimer = [];
+
+        foreach(${{ entity_pluralized }} as ${{ entity_singularized }})
+        {
+            $formSupprimer = $this->creerFormSupprimer(${{ entity_singularized }});
+            $formsSupprimer[${{ entity_singularized }}->getId()] = $formSupprimer->createView();
+        }
+{% endblock method_body %}
+
+{% block method_return %}
+        return $this->render('{{ entity|lower|replace({'\\': '/'}) }}/liste.html.twig', array(
+            '{{ entity_pluralized }}' => ${{ entity_pluralized }},
+            'forms_supprimer' => $formsSupprimer,
+        ));
+{% endblock method_return %}
+    }

@@ -1,0 +1,44 @@
+{%- if ('supprimer' in actions) and (not hide_delete) %}
+<div class="col-md-6">
+    <button class="btn btn-danger" data-toggle="modal" data-target="#modal-{{ entity_singularized ~ "-"~ identifier }}"><span class="glyphicon glyphicon-trash"></span> Supprimer le {{ entity_singularized }} TODO : vérifier (le/la/l')</button>
+</div>
+{%- endif %}
+{%- if ('editer' in actions) and (not hide_edit) %}
+<div class="col-md-6 text-right">
+    <a href="{{ "{{ path('" ~ route_name_prefix ~ "_editer', { '"~ identifier ~"': " ~ entity_singularized ~ "."~ identifier ~" }) }}" }}" class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span> Éditer {{ entity_singularized }}</a>
+</div
+{%- elseif ('editer' in actions) %}
+<div class="col-md-6 text-right">
+    <a href="{{ "{{ path('" ~ route_name_prefix ~ "_liste') }}" }}" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Annuler les modifications</a>
+    <button class="btn btn-primary" form="form_editer_{{ entity_singularized }}"><span class="glyphicon glyphicon-ok"></span> Enregistrer les modifications</button>
+</div>
+{%- endif %}
+{%- if ('supprimer' in actions) and (not hide_delete) %}
+<div id="modal-confirmation-suppression">
+    <div id="modal-{{ entity_singularized ~ "-"~ identifier }}" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p>Voulez-vous supprimer le {{ entity_singularized }} TODO: ajouter label ?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer text-left">
+                    <div class="row">
+                        <div class="col-md-6 text-left">
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-chevron-left"></span> Annuler</button>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            {{ '{{ form_start(form_supprimer) }}' }}
+                            <button class="btn btn-danger" type="submit"><span class="glyphicon glyphicon-trash"></span> Confirmer la suppression</button>
+                            {{ '{{ form_end(form_supprimer) }}' }}
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</div>
+{%- endif %}

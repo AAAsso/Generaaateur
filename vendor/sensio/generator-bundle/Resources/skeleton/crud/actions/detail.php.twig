@@ -1,0 +1,32 @@
+
+    /**
+{% block phpdoc_method_header %}
+     * Finds and displays a {{ entity_singularized }} entity.
+{% endblock phpdoc_method_header %}
+     *
+{% block phpdoc_method_annotations %}
+{% if 'annotation' == format %}
+     * @Route("/{{ '{' ~ identifier ~ '}' }}", name="{{ route_name_prefix }}_detail")
+     * @Method("GET")
+{% endif %}
+{% endblock phpdoc_method_annotations %}
+     */
+{% block method_definition %}
+    public function detailAction({{ entity_class }} ${{ entity_singularized }})
+{% endblock method_definition %}
+    {
+{% block method_body %}
+{% if 'supprimer' in actions %}
+        $formSupprimer = $this->creerFormSupprimer(${{ entity_singularized }});
+{% endif %}
+{% endblock method_body %}
+
+{% block method_return %}
+        return $this->render('{{ entity|lower|replace({'\\': '/'}) }}/detail.html.twig', array(
+            '{{ entity_singularized }}' => ${{ entity_singularized }},
+{% if 'supprimer' in actions %}
+            'form_supprimer' => $formSupprimer->createView(),
+{% endif %}
+        ));
+{% endblock method_return %}
+    }
