@@ -2,6 +2,8 @@
     {{ "{% extends 'base.html.twig' %}" }}
 {% endblock extends %}
 
+{% block title %}{{ "{{ " ~ entity_singularized ~ "." ~ identifier ~ " }}" }} TODO: modifier "id"{% endblock %}
+
 {% block body %}
     {{ "{% block body %}" }}
     <div class="col-md-12">
